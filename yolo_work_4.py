@@ -1,17 +1,18 @@
 from PIL import Image, ImageTk
+
 import pytesseract
 
 import cv2
 import numpy as np
 import os
 import yaml
-from language_tool_python import LanguageTool
+
 from yaml.loader import SafeLoader
 import tkinter as tk
 from tkinter import ttk
 from pdf2image import convert_from_path
 from spellchecker import SpellChecker
-
+from googletrans import Translator
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 class YOLO_Pred():
@@ -38,6 +39,12 @@ class YOLO_Pred():
             # Aggiungi altre correzioni personalizzate qui
         }
 
+    #def translate_text(self, text, target_language):
+    #    translator = Translator(to_lang=target_language, from_lang='en')
+    #    translation = translator.translate(text)
+    #    return translation
+
+
     def funz_correction(self, correct, class_name):
         # Utilizza un correttore ortografico per correggere le parole con errori
         spell = SpellChecker()
@@ -53,22 +60,24 @@ class YOLO_Pred():
              #   corrected_output.append(word)
             #else:
 
-
-
             corrected_word = self.correction_dict.get(word.lower(), None)
             if len(word) == 1:
                 continue
             if corrected_word is None:
                 corrected_word = spell.correction(word)
-            if corrected_word != word and corrected_word is not None:  # Aggiungi solo se la correzione è diversa dalla parola originale e la correzione diversa da None
+            if corrected_word != word and corrected_word is not None: # Aggiungi solo se la correzione è diversa dalla parola originale e la correzione diversa da None
+
                 corrected_output.append(corrected_word.capitalize())
             else:
+
                 corrected_output.append(word.capitalize())
 
         corrected_text = ' '.join(corrected_output)
 
         # print(corrected_text)
         return corrected_text
+
+
 
     def apply_tesseract(self, image, boxes_np, classes, index):
         vett = []
@@ -101,9 +110,13 @@ class YOLO_Pred():
         output = ""
         if logo_text:
             logo_text = self.funz_correction(logo_text, 'logo')
+            logo_text = logo_text.upper()
             output += logo_text + '\n\n'
         output += '\n'.join(vett)
         print(output)
+        #target_language = 'it'
+        #output = self.translate_text(output, target_language)
+        #print(output)
         return output
 
 

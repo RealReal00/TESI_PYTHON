@@ -14,7 +14,7 @@ pdf_queue = deque()  # Coda per i file PDF
 processing_thread = None  # Thread per l'elaborazione dei PDF
 
 def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('Ciao! Inviami il tuo PDF')
+     update.message.reply_text('Ciao! Inviami il tuo PDF')
 
 def handle_document(update: Update, context: CallbackContext) -> None:
     document = update.message.document
@@ -33,7 +33,7 @@ def process_pdf_queue():
             image = process_pdf(pdf_path)
             yolo.predictions(image)
         else:
-            time.sleep(5)  # Attendi 10 secondi se la coda è vuota
+            time.sleep(10)  # Attendi 10 secondi se la coda è vuota
 
 def main() -> None:
     # Imposta il tuo token ottenuto da BotFather
