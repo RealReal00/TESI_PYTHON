@@ -1,6 +1,6 @@
 import time
 import threading
-from telegram import Update, InputFile
+from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, Filters
 from collections import deque
 from yolo_work_4 import YOLO_Pred

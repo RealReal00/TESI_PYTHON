@@ -1,18 +1,9 @@
-from PIL import Image, ImageTk
-
 import pytesseract
-
 import cv2
 import numpy as np
-import os
 import yaml
-
 from yaml.loader import SafeLoader
-import tkinter as tk
-from tkinter import ttk
-from pdf2image import convert_from_path
 from spellchecker import SpellChecker
-from googletrans import Translator
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 class YOLO_Pred():
@@ -38,12 +29,6 @@ class YOLO_Pred():
 
             # Aggiungi altre correzioni personalizzate qui
         }
-
-    #def translate_text(self, text, target_language):
-    #    translator = Translator(to_lang=target_language, from_lang='en')
-    #    translation = translator.translate(text)
-    #    return translation
-
 
     def funz_correction(self, correct, class_name):
         # Utilizza un correttore ortografico per correggere le parole con errori
@@ -74,7 +59,6 @@ class YOLO_Pred():
 
         corrected_text = ' '.join(corrected_output)
 
-        # print(corrected_text)
         return corrected_text
 
 
@@ -104,7 +88,7 @@ class YOLO_Pred():
                 ocr_text = pytesseract.image_to_string(roi)
                 ocr_text = self.funz_correction(ocr_text, class_name)
                 vett.append(ocr_text + '\n')
-                #print(ocr_text)
+
 
         # Costruisci l'output mettendo il testo del logo all'inizio, se presente
         output = ""
@@ -114,13 +98,8 @@ class YOLO_Pred():
             output += logo_text + '\n\n'
         output += '\n'.join(vett)
         print(output)
-        #target_language = 'it'
-        #output = self.translate_text(output, target_language)
-        #print(output)
+
         return output
-
-
-
 
 
     def predictions(self, image):
@@ -142,7 +121,7 @@ class YOLO_Pred():
         self.yolo.setInput(blob)
         preds = self.yolo.forward() # detection or prediction from YOLO
 
-        print(preds.shape)
+        #print(preds.shape)
 
         # Non Maximum Supression
         # step-1: filter detection based on confidence (0.4) and probability score (0.25)
@@ -212,41 +191,8 @@ class YOLO_Pred():
                 cv2.rectangle(draw_image, (x_new, y_new - 30), (x_new + w_new, y_new), (255, 255, 255), -1)
                 cv2.putText(draw_image, text, (x_new, y_new - 10), cv2.FONT_HERSHEY_PLAIN, 0.7, (0, 0, 0), 1)
 
-
-        '''
-        # Creazione di una finestra Tkinter per visualizzare l'immagine scorribile
-        scrollable_window = tk.Tk()
-        scrollable_window.title("Scrollable Image")
-
-        # Creazione di uno scorrevole Frame
-        canvas = tk.Canvas(scrollable_window, scrollregion=(0, 0, image.shape[1], image.shape[0]))
-        hscroll = ttk.Scrollbar(scrollable_window, orient="horizontal", command=canvas.xview)
-        vscroll = ttk.Scrollbar(scrollable_window, orient="vertical", command=canvas.yview)
-        canvas.configure(xscrollcommand=hscroll.set, yscrollcommand=vscroll.set)
-
-        vscroll.pack(side="right", fill="y")
-        hscroll.pack(side="bottom", fill="x")
-        canvas.pack(side="left", fill="both", expand=True)
-
-        # Carica l'immagine da opencv a PIL
-        image_pil = Image.fromarray(cv2.cvtColor(draw_image, cv2.COLOR_BGR2RGB))
-        image_tk = ImageTk.PhotoImage(image_pil)
-
-        # Visualizza l'immagine nel Frame
-        canvas.create_image(0, 0, anchor="nw", image=image_tk)
-
-        scrollable_window.mainloop()
-        '''
         output = self.apply_tesseract(image, boxes_np, classes, index)
         cv2.imwrite("temp/image_ocr.jpg", draw_image)
         return image, output
-
-
-#cv2.imshow('original', img)
-#cv2.imwrite("temp/image.jpg",img)
-#cv2.imshow('yolo_prediction', image)
-#cv2.waitKey(0)
-#cv2.destroyAllWindows()
-#cv2.imwrite("temp/image_ocr.jpg",draw_image)
 
 
