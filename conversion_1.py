@@ -1,13 +1,21 @@
-from pdf2image import convert_from_bytes
+from pdf2image import convert_from_path
+import cv2
+import os
 
-def convert_pdf_to_images(pdf_data):
-    images = convert_from_bytes(pdf_data)
-    return images
+def process_pdf(pdf_path):
 
-# Esempio di come potresti utilizzare la funzione
-with open('example.pdf', 'rb') as pdf_file:
-    pdf_data = pdf_file.read()
-    images = convert_pdf_to_images(pdf_data)
 
-for i, image in enumerate(images):
-    image.save(f'page{i}.jpg', 'JPEG')
+    # Converte il PDF in immagine JPG
+    images = convert_from_path(pdf_path, 500, poppler_path=r'C:\Program Files\poppler-21.11.0\Library\bin')
+    print(f"Numero di immagini generate: {len(images)}")  # Stampa la lunghezza della lista images
+    '''
+    for i in range(len(images)):
+        # Save pages as images in the pdf
+        images[i].save('page' + str(i) + '.jpg', 'JPEG')
+    '''
+    # Salva l'immagine nella cartella "temp"
+    image_path = os.path.join("C:/Users/ricca/PycharmProjects/pythonProject/temp", "page.jpg")
+    images[0].save(image_path, 'PNG')
+    image = images[0]
+
+    return image_path
