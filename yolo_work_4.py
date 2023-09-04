@@ -23,11 +23,12 @@ class YOLO_Pred():
         self.yolo.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
         #self.predictions("./data/img_2.jpg")
 
-        # Dizionario per le correzioni personalizzate
+        # Dizionario per le correzioni personalizzate    #EH WALL STREET JOUR
         self.correction_dict = {
             "watt": "WALL", "spree": "STREET", "journat": "JOURNAL",
+            "eh": "THE", "jour!": "JOURNAL", "ele": "THE", "ecime": "TIMES",
+            "times": "TIMES", "che": "the", "po": "post", "lives": "times"
 
-            # Aggiungi altre correzioni personalizzate qui
         }
 
     def funz_correction(self, correct, class_name):
@@ -77,6 +78,9 @@ class YOLO_Pred():
                 logo_text = pytesseract.image_to_string(roi).strip()
                 break  # Esci subito dopo aver trovato il testo del logo
 
+        if logo_text == None:
+            logo_text = "Titolo non rilevato"
+
         # Estrai il testo dalle altre aree
         for ind in index:
             x, y, w, h = boxes_np[ind]
@@ -96,9 +100,9 @@ class YOLO_Pred():
             logo_text = self.funz_correction(logo_text, 'logo')
             logo_text = logo_text.upper()
             output += logo_text + '\n\n'
+
         output += '\n'.join(vett)
         print(output)
-
         return output
 
 
