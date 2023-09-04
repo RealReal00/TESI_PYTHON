@@ -69,7 +69,7 @@ async def process_pdf_queue_and_send_result():
                 global_ocr_result = '\n\n'.join(ocr_results)
                 await send_ocr_result(user_id, global_ocr_result)
 
-        await asyncio.sleep(30)  # Controlla la coda ogni 10 secondi
+        await asyncio.sleep(30)  # Controlla la coda ogni N secondi
 
 # Funzione per inviare il risultato OCR come messaggio
 async def send_ocr_result(user_id, ocr_result):
@@ -80,7 +80,7 @@ async def send_ocr_result(user_id, ocr_result):
 
 # Funzione principale
 def main() -> None:
-    # Imposta il tuo token ottenuto da BotFather
+    # Imposta il token ottenuto da BotFather
     token = '6618676928:AAGwjEy2ljA-rlLlgyVZ1yid-ByzVqyrfB0'
     global bot
     bot = Updater(token).bot
@@ -88,14 +88,14 @@ def main() -> None:
     # Avvia il thread di elaborazione delle sessioni utente
     threading.Thread(target=asyncio.run, args=(process_pdf_queue_and_send_result(),)).start()
 
-    # Imposta il tuo bot e dispatcher
+    # Imposta il bot e dispatcher
     updater = Updater(token, use_context=True)
     dispatcher = updater.dispatcher
 
-    # Aggiungi un gestore per il comando /start
+    # Aggiunta di un gestore per il comando /start
     dispatcher.add_handler(CommandHandler("start", start))
 
-    # Aggiungi un gestore per i documenti inviati dagli utenti
+    # Aggiunta di un gestore per i documenti inviati dagli utenti
     dispatcher.add_handler(MessageHandler(Filters.document.mime_type("application/pdf"), handle_document))
 
     # Avvia il bot
